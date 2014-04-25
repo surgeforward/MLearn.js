@@ -17,17 +17,13 @@ Dependencies
 Usage
 ============
 
-var data = require('../../datasets/iris.js');
-
-var mlearn = require('../../index.js')();
-
-var knn = mlearn.classifier('knn', { neighbors: 5 });
-
-knn.train(data.train.features, data.train.targets);
-
-var score = knn.score(data.validation.features, data.validation.targets);
-
-var predictions = knn.predict( data.validation.features );
+    var data = require('../../datasets/iris.js');
+    var mlearn = require('../../index.js')();
+    var knn = mlearn.classifier('knn', { neighbors: 5 });
+    
+    knn.train(data.train.features, data.train.targets);
+    var score = knn.score(data.validation.features, data.validation.targets);
+    var predictions = knn.predict( data.validation.features );
 
 References
 ==========
