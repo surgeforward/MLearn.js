@@ -24,7 +24,7 @@ module.exports = function () {
     csv()
         .from.path(__dirname+'/digits-train.csv', { delimiter: ',', escape: '"' })
         .on('record', function (row,index){
-            if (index > 38000) dSet = 'validation';
+            if (index > 41990) dSet = 'validation';
             dataSet[dSet].features.push(row.slice(1));
             dataSet[dSet].targets.push(row[0]);
         })
