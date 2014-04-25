@@ -14,7 +14,7 @@ module.exports = function () {
      *
      */
     mlearn.classifier = function (type, properties) {
-        var classifier = require('./lib/classifier.js');
+        var classifier = require(__dirname+'/lib/classifier.js');
         return classifier( type, properties );
     };
 
@@ -22,7 +22,7 @@ module.exports = function () {
      *
      */
     mlearn.regressor = function (type, properties) {
-        var regressor = require('./lib/regressor.js');
+        var regressor = require(__dirname+'/lib/regressor.js');
         return regressor( type, properties );
     };
 
