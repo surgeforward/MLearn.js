@@ -10,6 +10,9 @@ Dependencies
 ============
 
 * Lo-Dash - http://lodash.com/
+* Q - https://www.npmjs.org/package/q
+* CSV - https://www.npmjs.org/package/csv
+	Required for some example datasets to work.
 
 Usage
 ============
