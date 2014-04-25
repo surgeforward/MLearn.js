@@ -1,14 +1,20 @@
-var data = require('../../datasets/iris.js')();
-var mlearn = require('../../index.js')();
-var knn = mlearn.classifier('knn', { neighbors: 5 });
+var getDataSet = require(__dirname+'/../../datasets/digits.js');
 
-console.log('Training Model');
-knn.train(data.train.features, data.train.targets);
+console.log('Loading Digits Dataset');
+getDataSet().then(function (dataSet, getTestData) {
+	console.log('Digits Dataset Loaded');
 
-console.log('Scoring Model With Validation Data');
-var score = knn.score(data.validation.features, data.validation.targets);
-console.log(score);
+	var mlearn = require(__dirname+'/../../index.js')();
+	var knn = mlearn.classifier('knn', { neighbors: 5 });
 
-console.log('Making Predictions With Model');
-var predictions = knn.predict( data.validation.features );
-console.log(predictions);
+	console.log('Training Model');
+	knn.train(dataSet.train.features, dataSet.train.targets);
+	console.log('Model Trained');
+
+	console.log('Scoring Model With Validation data');
+	var score = knn.score(dataSet.validation.features, dataSet.validation.targets);
+	console.log('Finished Scoring: ', score);
+
+}, function (error) {
+    console.log(error);
+});
