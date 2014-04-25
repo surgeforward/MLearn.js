@@ -14,7 +14,7 @@ Dependencies
 Usage
 ============
 
-var data = require('../../datasets/iris.js')();
+var data = require('../../datasets/iris.js');
 
 var mlearn = require('../../index.js')();
 
