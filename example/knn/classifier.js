@@ -16,7 +16,7 @@ getDataSet().then(function (dataSet, getTestData) {
     knn = mlearn.classifier('knn', { neighbors: 5 });
     console.log('Training Model...');
 
-    return knn.train(dataSet.train.features, dataSet.train.targets).then(function () {
+    return knn.training(dataSet.train.features, dataSet.train.targets).then(function () {
         return dataSet;
     });
 }).then(function (dataSet) {
@@ -25,7 +25,7 @@ getDataSet().then(function (dataSet, getTestData) {
     scoreStart = Date.now();
     console.log('Scoring Model With Validation Data...');
 
-    return knn.score(dataSet.validation.features, dataSet.validation.targets);
+    return knn.scoring(dataSet.validation.features, dataSet.validation.targets);
 }).then(function (score) {
     console.log('Finished Scoring');
     console.log('Accuracy: ', (score * 100) + '%');
