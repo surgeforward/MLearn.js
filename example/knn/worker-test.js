@@ -51,15 +51,13 @@ function testWorkers() {
     var workers = _.map(_.range(testArray.length), function (i) {
         var W = new Worker(__dirname+'/worker.js');
         W.onmessage = function (event) {
-            setTimeout(function () {
-                responses.push(event.data.result);
-                if (event.data.closing) {
-                    completedWorkers++;
-                    if (completedWorkers == testArray.length) {
-                        console.log(testArray);
-                    }
+            responses.push(event.data.result);
+            if (event.data.closing) {
+                completedWorkers++;
+                if (completedWorkers == testArray.length) {
+                    console.log(testArray);
                 }
-            });
+            }
         }
         return W;
     });
