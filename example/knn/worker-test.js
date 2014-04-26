@@ -2,12 +2,14 @@ var Q = require('q');
 var _ = require('lodash');
 var timing = require('timing')();
 var Parallel = require('paralleljs');
+var Worker = require('webworker-threads').Worker;
 
 var testArray = [42, 43, 44];
 
 ////////////////////////////////////////////
 
-testQ().then(testParallel);
+// testQ().then(testParallel);
+testWorkers();
 
 ////////////////////////////////////////////
 
@@ -21,7 +23,7 @@ function testQ() {
         console.log('Q:', timing.timeEnd('Q').duration);
         console.log(result); 
         console.log('--');
-    });    
+    });
 }
 
 ////////////////////////////////////////////
@@ -36,6 +38,34 @@ function testParallel() {
         console.log('Parallel:', timing.timeEnd('Parallel').duration);
         console.log(result); 
         console.log('--');
+    });
+}
+
+////////////////////////////////////////////
+
+function testWorkers() {
+    timing.time('Worker');
+
+    var responses = [], completedWorkers = 0;
+
+    var workers = _.map(_.range(testArray.length), function (i) {
+        var W = new Worker(__dirname+'/worker.js');
+        W.onmessage = function (event) {
+            setTimeout(function () {
+                responses.push(event.data.result);
+                if (event.data.closing) {
+                    completedWorkers++;
+                    if (completedWorkers == testArray.length) {
+                        console.log(testArray);
+                    }
+                }
+            });
+        }
+        return W;
+    });
+
+    _.each(workers, function (W, key) {
+        W.postMessage(testArray[key]);
     });
 }
 
