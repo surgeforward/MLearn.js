@@ -5,25 +5,24 @@ var Parallel = require('paralleljs');
 var Worker = require('webworker-threads').Worker;
 var numCPUs = require('os').cpus().length;
 
-var testArray = [42, 43, 44, 45, 46, 47, 48, 49];
+var testArray = [42, 43, 44];
 
 ////////////////////////////////////////////
 
-testQ();
+//testWorkers();
+testQ().then(testParallel);
 
 ////////////////////////////////////////////
 
 function testQ() {
     timing.time('Q');
-    return _.reduce(testArray, function (sum, x) {
-        return promisify(fib, x).then(function (result) {
-            return sum + result;
-        });
-    }, 0).then(function (result) {
+    return Q.all(_.map(testArray, function (x) {
+        return promisify(fib, x);
+    })).then(function (result) {
         console.log('Q:', timing.timeEnd('Q').duration);
         console.log(result); 
         console.log('--');
-    });
+    });    
 }
 
 ////////////////////////////////////////////
@@ -31,19 +30,16 @@ function testQ() {
 function testParallel() {
     timing.time('Parallel');
     var p = new Parallel(testArray);
-    return p.reduce(function (sum, num) {
-        var f = fib(num);
-        return f + sum;
-    }, 0).then(function (sum, result) {
+    return p.map(fib).then(function (result) {
         console.log('Parallel:', timing.timeEnd('Parallel').duration);
-        console.log(result); 
+        console.log(result);
         console.log('--');
     });
 }
 
 ////////////////////////////////////////////
 
-function testWorkers(fn) {
+function testWorkers() {
     timing.time('Worker');
 
     var responses = [], completedWorkers = 0;
@@ -59,14 +55,8 @@ function testWorkers(fn) {
             }
 
             if (completedWorkers == testArray.length) {
-                
                 console.log('Worker:', timing.timeEnd('Worker').duration);
-                
-                var total = _.reduce(responses, function (sum, num) {
-                    return sum+num;
-                });
-                console.log(total); 
-                
+                console.log(responses);
                 console.log('--');
             }
         }
