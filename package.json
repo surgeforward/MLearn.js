@@ -31,6 +31,7 @@
     "lodash": "~2.4.1",
     "paralleljs": "^0.2.1",
     "q": "~1.0.1",
-    "timing": "^0.1.3"
+    "timing": "^0.1.3",
+    "webworker-threads": "^0.4.11"
   }
 }
