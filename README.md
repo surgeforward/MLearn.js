@@ -9,15 +9,7 @@ Installation
 Dependencies
 ============
 
-* Lo-Dash
-	- http://lodash.com/
-* Q
-	- https://www.npmjs.org/package/q
-* ASync
-	- https://github.com/caolan/async#each
-* CSV
-	- https://www.npmjs.org/package/csv
-	- Required for some example datasets to work.
+Refer to package.json from NodeJS dependendies.
 
 Usage
 ============
