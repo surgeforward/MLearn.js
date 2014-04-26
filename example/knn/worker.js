@@ -1,6 +1,5 @@
-
 self.onmessage = function (event) {
-	self.postMessage({'result': event.data, 'closing': true});
+	self.postMessage({'result': fib(event.data), 'closing': true});
 	self.close();
 };
 

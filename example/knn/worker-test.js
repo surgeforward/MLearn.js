@@ -3,13 +3,13 @@ var _ = require('lodash');
 var timing = require('timing')();
 var Parallel = require('paralleljs');
 var Worker = require('webworker-threads').Worker;
+var numCPUs = require('os').cpus().length;
 
-var testArray = [42, 43, 44];
+var testArray = [42, 43, 44, 45, 46, 47, 48, 49];
 
 ////////////////////////////////////////////
 
-// testQ().then(testParallel);
-testWorkers();
+testQ();
 
 ////////////////////////////////////////////
 
@@ -43,27 +43,40 @@ function testParallel() {
 
 ////////////////////////////////////////////
 
-function testWorkers() {
+function testWorkers(fn) {
     timing.time('Worker');
 
     var responses = [], completedWorkers = 0;
 
-    var workers = _.map(_.range(testArray.length), function (i) {
+    var workers = _.map(_.range(numCPUs), function (i) {
         var W = new Worker(__dirname+'/worker.js');
+
         W.onmessage = function (event) {
             responses.push(event.data.result);
+            
             if (event.data.closing) {
                 completedWorkers++;
-                if (completedWorkers == testArray.length) {
-                    console.log(testArray);
-                }
+            }
+
+            if (completedWorkers == testArray.length) {
+                
+                console.log('Worker:', timing.timeEnd('Worker').duration);
+                
+                var total = _.reduce(responses, function (sum, num) {
+                    return sum+num;
+                });
+                console.log(total); 
+                
+                console.log('--');
             }
         }
+
         return W;
     });
 
-    _.each(workers, function (W, key) {
-        W.postMessage(testArray[key]);
+    _.each(testArray, function (W, key) {
+        var index = Math.round(key % 8)
+        workers[index].postMessage(testArray[key]);
     });
 }
 
