@@ -1,0 +1,17 @@
+{
+	 "translate_tabs_to_spaces": true
+	,"folders":
+	[
+		{
+			"folder_exclude_patterns":
+			[
+				".git"
+			]
+			,"file_exclude_patterns":
+			[
+				 "*.sublime-workspace"
+			]
+			,"path": "."
+		}
+	]
+}
