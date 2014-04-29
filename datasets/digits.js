@@ -25,8 +25,8 @@ module.exports = function () {
     csv()
         .from.path(__dirname+'/digits/train.csv', { delimiter: ',', escape: '"' })
         .on('record', function (row,index){
-            dSet = (index < 38000) ? 'train' : 'validation' ;
-            if (index >= 38001) return;
+            dSet = (index < 30000) ? 'train' : 'validation' ;
+            if (index >= 31000) return;
             
             var features = _.map(row.slice(1), function (feature) {
                 return feature > 0 ? 1 : 0 ;
