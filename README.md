@@ -4,30 +4,35 @@ About
 The Surge MLearn.JS package provided by the Surge Consulting Group is a set of open sourced tools for building machine learning applications. The package is aimed to run as NodeJS package that can be installed via NPM, as well as a browser based implemenation.
 
 Installation
-============
+=====
 
-Dependencies
-============
 
-Refer to package.json from NodeJS dependendies.
 
 Usage
-============
+=====
 
-    var data = require('../../datasets/iris.js');
-    var mlearn = require('../../index.js')();
-    var knn = mlearn.classifier('knn', { neighbors: 5 });
-    
-    knn.train(data.train.features, data.train.targets);
-    var score = knn.score(data.validation.features, data.validation.targets);
-    var predictions = knn.predict( data.validation.features );
+    var getDataSet = require(__dirname + '/../../datasets/digits.js');
+    var mlearn = require(__dirname + '/../../index.js')();
+
+    getDataSet().then(function (dataSet, getTestData) {
+        var knn = mlearn.classifier('knn', { neighbors: 5 });
+        return knn.training(dataSet.train.features, dataSet.train.targets).then(function () {
+            return dataSet;
+        });
+    }).then(function (dataSet) {
+        return knn.predicting(dataSet.validation.features, dataSet.validation.targets);
+    }).then(function (prediction) {
+        console.log('Predicted:', prediction);
+    });
 
 References
-==========
+=====
+
  * [Surge Consulting Group](http://www.surgeforward.com/)
 
 License
 =====
+
 The MIT License (MIT)
 
 Copyright (c) 2014 Surge, LLC
