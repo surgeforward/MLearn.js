@@ -1,7 +1,7 @@
 About
 =====
 
-The Surge MLearn.JS package provided by the Surge Consulting Group is a set of open sourced tools for building machine learning applications. The package is aimed to run as NodeJS package that can be installed via NPM, as well as a browser based implemenation.
+The Surge MLearn.JS package provided by the Surge Consulting Group is a set of open sourced tools for building machine learning applications.
 
 Installation
 =====
