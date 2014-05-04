@@ -37,13 +37,6 @@ getDataSet(1, 1).then(function (dataSet, getTestData) {
         });
     });
 
-    suite.add('hamming', function () {
-        knn.metric = 'hamming';
-        knn.predicting(dataSet.validation.features).then(function (prediction) {
-            return prediction;
-        });
-    });
-
     suite.on('complete', function () {
         var fastest = this.filter('fastest');
         console.log('Fastest: ', _.map(fastest, function (s) { return {name: s.name, mean: s.stats.mean}; }));
@@ -75,13 +68,6 @@ getDataSet(1, 1).then(function (dataSet, getTestData) {
 
             suite.add('manhattan', function () {
                 knn.metric = 'manhattan';
-                knn.predicting(dataSet.validation.features).then(function (prediction) {
-                    return prediction;
-                });
-            });
-
-            suite.add('hamming', function () {
-                knn.metric = 'hamming';
                 knn.predicting(dataSet.validation.features).then(function (prediction) {
                     return prediction;
                 });
@@ -123,13 +109,6 @@ getDataSet(1, 1).then(function (dataSet, getTestData) {
                         });
                     });
 
-                    suite.add('hamming', function () {
-                        knn.metric = 'hamming';
-                        knn.predicting(dataSet.validation.features).then(function (prediction) {
-                            return prediction;
-                        });
-                    });
-
                     suite.on('complete', function () {
                         var fastest = this.filter('fastest');
                         console.log('Fastest: ', _.map(fastest, function (s) { return {name: s.name, mean: s.stats.mean}; }));
@@ -161,13 +140,6 @@ getDataSet(1, 1).then(function (dataSet, getTestData) {
 
                             suite.add('manhattan', function () {
                                 knn.metric = 'manhattan';
-                                knn.predicting(dataSet.validation.features).then(function (prediction) {
-                                    return prediction;
-                                });
-                            });
-
-                            suite.add('hamming', function () {
-                                knn.metric = 'hamming';
                                 knn.predicting(dataSet.validation.features).then(function (prediction) {
                                     return prediction;
                                 });
