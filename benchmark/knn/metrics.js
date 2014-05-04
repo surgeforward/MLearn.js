@@ -14,7 +14,7 @@ getDataSet(1, 1).then(function (dataSet, getTestData) {
     });
 }).then(function (dataSet) {
     
-    var suite = new Benchmark.Suite({initCount: 100});
+    var suite = new Benchmark.Suite();
 
     suite.add('euclidian', function () {
         knn.metric = 'euclidian';
@@ -46,20 +46,18 @@ getDataSet(1, 1).then(function (dataSet, getTestData) {
 
     suite.on('complete', function () {
         var fastest = this.filter('fastest');
-        return console.log(fastest);
-
-        console.log('Fastest: ', _.first(fastest.pluck('name')), _.first(fastest.pluck('maxTime')), _.first(fastest.pluck('minTime')));
+        console.log('Fastest: ', _.map(fastest, function (s) { return {name: s.name, mean: s.stats.mean}; }));
         var slowest = this.filter('slowest');
-        console.log('Slowest: ', _.first(slowest.pluck('name')), _.first(slowest.pluck('maxTime')), _.first(slowest.pluck('minTime')));
+        console.log('Slowest: ', _.map(slowest, function (s) { return { name: s.name, mean: s.stats.mean}; }));
 
-        return getDataSet(100, 1).then(function (dataSet, getTestData) {
+        getDataSet(100, 1).then(function (dataSet, getTestData) {
             knn = mlearn.classifier('knn', { neighbors: 5 });
             return knn.training(dataSet.train.features, dataSet.train.targets).then(function () {
                 return dataSet;
             });
         }).then(function (dataSet) {
             
-            var suite = new Benchmark.Suite({initCount: 100});
+            var suite = new Benchmark.Suite();
 
             suite.add('euclidian', function () {
                 knn.metric = 'euclidian';
@@ -91,18 +89,18 @@ getDataSet(1, 1).then(function (dataSet, getTestData) {
 
             suite.on('complete', function () {
                 var fastest = this.filter('fastest');
-                console.log('Fastest: ', _.first(fastest.pluck('name')), _.first(fastest.pluck('maxTime')), _.first(fastest.pluck('minTime')));
+                console.log('Fastest: ', _.map(fastest, function (s) { return {name: s.name, mean: s.stats.mean}; }));
                 var slowest = this.filter('slowest');
-                console.log('Slowest: ', _.first(slowest.pluck('name')), _.first(slowest.pluck('maxTime')), _.first(slowest.pluck('minTime')));
+                console.log('Slowest: ', _.map(slowest, function (s) { return { name: s.name, mean: s.stats.mean}; }));
 
-                return getDataSet(27000, 1).then(function (dataSet, getTestData) {
+                getDataSet(27000, 1).then(function (dataSet, getTestData) {
                     knn = mlearn.classifier('knn', { neighbors: 5 });
                     return knn.training(dataSet.train.features, dataSet.train.targets).then(function () {
                         return dataSet;
                     });
                 }).then(function (dataSet) {
                     
-                    var suite = new Benchmark.Suite({initCount: 100});
+                    var suite = new Benchmark.Suite({initCount: 25});
 
                     suite.add('euclidian', function () {
                         knn.metric = 'euclidian';
@@ -134,58 +132,58 @@ getDataSet(1, 1).then(function (dataSet, getTestData) {
 
                     suite.on('complete', function () {
                         var fastest = this.filter('fastest');
-                        console.log('Fastest: ', _.first(fastest.pluck('name')), _.first(fastest.pluck('maxTime')), _.first(fastest.pluck('minTime')));
+                        console.log('Fastest: ', _.map(fastest, function (s) { return {name: s.name, mean: s.stats.mean}; }));
                         var slowest = this.filter('slowest');
-                        console.log('Slowest: ', _.first(slowest.pluck('name')), _.first(slowest.pluck('maxTime')), _.first(slowest.pluck('minTime')));
+                        console.log('Slowest: ', _.map(slowest, function (s) { return { name: s.name, mean: s.stats.mean}; }));
+
+                        getDataSet(27000, 500).then(function (dataSet, getTestData) {
+                            knn = mlearn.classifier('knn', { neighbors: 5 });
+                            return knn.training(dataSet.train.features, dataSet.train.targets).then(function () {
+                                return dataSet;
+                            });
+                        }).then(function (dataSet) {
+                            
+                            var suite = new Benchmark.Suite({initCount: 10});
+
+                            suite.add('euclidian', function () {
+                                knn.metric = 'euclidian';
+                                knn.predicting(dataSet.validation.features).then(function (prediction) {
+                                    return prediction;
+                                });
+                            });
+
+                            suite.add('lazyManhattan', function () {
+                                knn.metric = 'lazyManhattan';
+                                knn.predicting(dataSet.validation.features).then(function (prediction) {
+                                    return prediction;
+                                });
+                            });
+
+                            suite.add('manhattan', function () {
+                                knn.metric = 'manhattan';
+                                knn.predicting(dataSet.validation.features).then(function (prediction) {
+                                    return prediction;
+                                });
+                            });
+
+                            suite.add('hamming', function () {
+                                knn.metric = 'hamming';
+                                knn.predicting(dataSet.validation.features).then(function (prediction) {
+                                    return prediction;
+                                });
+                            });
+
+                            suite.on('complete', function () {
+                                var fastest = this.filter('fastest');
+                                console.log('Fastest: ', _.map(fastest, function (s) { return {name: s.name, mean: s.stats.mean}; }));
+                                var slowest = this.filter('slowest');
+                                console.log('Slowest: ', _.map(slowest, function (s) { return { name: s.name, mean: s.stats.mean}; }));
+                            })
+                            .run({async: false});
+
+                        });
                     })
                     .run({async: false});
-
-                    return getDataSet(27000, 3000).then(function (dataSet, getTestData) {
-                        knn = mlearn.classifier('knn', { neighbors: 5 });
-                        return knn.training(dataSet.train.features, dataSet.train.targets).then(function () {
-                            return dataSet;
-                        });
-                    }).then(function (dataSet) {
-                        
-                        var suite = new Benchmark.Suite({initCount: 100});
-
-                        suite.add('euclidian', function () {
-                            knn.metric = 'euclidian';
-                            knn.predicting(dataSet.validation.features).then(function (prediction) {
-                                return prediction;
-                            });
-                        });
-
-                        suite.add('lazyManhattan', function () {
-                            knn.metric = 'lazyManhattan';
-                            knn.predicting(dataSet.validation.features).then(function (prediction) {
-                                return prediction;
-                            });
-                        });
-
-                        suite.add('manhattan', function () {
-                            knn.metric = 'manhattan';
-                            knn.predicting(dataSet.validation.features).then(function (prediction) {
-                                return prediction;
-                            });
-                        });
-
-                        suite.add('hamming', function () {
-                            knn.metric = 'hamming';
-                            knn.predicting(dataSet.validation.features).then(function (prediction) {
-                                return prediction;
-                            });
-                        });
-
-                        suite.on('complete', function () {
-                            var fastest = this.filter('fastest');
-                            console.log('Fastest: ', _.first(fastest.pluck('name')), _.first(fastest.pluck('maxTime')), _.first(fastest.pluck('minTime')));
-                            var slowest = this.filter('slowest');
-                            console.log('Slowest: ', _.first(slowest.pluck('name')), _.first(slowest.pluck('maxTime')), _.first(slowest.pluck('minTime')));
-                        })
-                        .run({async: false});
-
-                    });
 
                 });
             })
