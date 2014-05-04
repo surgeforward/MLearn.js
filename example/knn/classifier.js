@@ -4,15 +4,20 @@ var Q = require('q');
 var getDataSet = require(__dirname + '/../../datasets/digits.js');
 
 var startTime = Date.now(), dataStart = Date.now();
-var mlearn = require(__dirname + '/../../index.js')();
+var mlearn = require(__dirname + '/../../mlearn.js')();
 var knn, scoreStart, trainStart;
 
 Q.longStackSupport = true;
 
+var numNeighbors = parseInt(process.argv[2]) || 5 ;
+var trainSize = process.argv[3].split(',') || [27000,3000] ;
+var metricType = process.argv[4] || 'euclidian' ;
+var weightedKNN = process.argv[5] || false ;
+
 console.log('Loading Dataset...');
-getDataSet().then(function (dataSet, getTestData) {
+getDataSet(parseInt(trainSize[0]), parseInt(trainSize[1])).then(function (dataSet, getTestData) {
     console.log('Finished Loading Dataset in', (Date.now() - dataStart) / 1000, 'Seconds');
-    knn = mlearn.classifier('knn', { neighbors: 5 });
+    knn = mlearn.classifier('knn', { neighbors: parseInt(numNeighbors), metric: metricType, weights: (weightedKNN) ? true : false });
     console.log('Training Model...');
 
     trainStart = Date.now();
