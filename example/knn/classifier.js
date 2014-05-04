@@ -12,7 +12,7 @@ Q.longStackSupport = true;
 console.log('Loading Dataset...');
 getDataSet().then(function (dataSet, getTestData) {
     console.log('Finished Loading Dataset in', (Date.now() - dataStart) / 1000, 'Seconds');
-    knn = mlearn.classifier('knn', { neighbors: 5 });
+    knn = mlearn.classifier('knn', { neighbors: 5, metric: 'lazyManhattan' });
     console.log('Training Model...');
 
     trainStart = Date.now();
