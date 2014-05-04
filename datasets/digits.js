@@ -36,7 +36,7 @@ module.exports = function (trainingSize, validationSize) {
             data[dSet].targets.push(target);
         })
         .on('end', function (count) {
-            console.log('Traing Data Size: ' + data.train.features.length + ' records and ' + data.train.features[0].length + ' features');
+            console.log('Training Data Size: ' + data.train.features.length + ' records and ' + data.train.features[0].length + ' features');
             console.log('Validation Data Size: ' + data.validation.features.length + ' records and ' + data.validation.features[0].length + ' features');
             deferred.resolve(data); 
         })
