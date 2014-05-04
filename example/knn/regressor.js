@@ -4,7 +4,7 @@ var Q = require('q');
 var getDataSet = require(__dirname + '/../../datasets/houses.js');
 
 var startTime = Date.now(), dataStart = Date.now();
-var mlearn = require(__dirname + '/../../index.js')();
+var mlearn = require(__dirname + '/../../mlearn.js')();
 var knn, scoreStart, trainStart;
 
 Q.longStackSupport = true;

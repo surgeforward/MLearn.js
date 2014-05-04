@@ -4,7 +4,7 @@ var Q = require('q');
 var getDataSet = require(__dirname + '/../../datasets/digits.js');
 
 var startTime = Date.now(), dataStart = Date.now();
-var mlearn = require(__dirname + '/../../index.js')();
+var mlearn = require(__dirname + '/../../mlearn.js')();
 var knn, scoreStart, trainStart;
 
 Q.longStackSupport = true;
@@ -25,7 +25,7 @@ getDataSet().then(function (dataSet, getTestData) {
     console.log('Scoring Model...');
     return knn.scoring(dataSet.validation.features, dataSet.validation.targets);
 }).then(function (score) {
-    console.log('Finished Scoring W/ Accuracy of', (score * 100) + '%');
+    console.log('Finished Scoring W/ Accuracy of', (Math.round(score, 2) * 100) + '%');
     console.log('Completed Scoring in', (Date.now() - scoreStart) / 1000, 'Seconds');
     console.log('Completed All in', (Date.now() - startTime) / 1000, 'Seconds');
 }).catch(function (error) {
