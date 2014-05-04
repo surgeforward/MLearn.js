@@ -3,7 +3,7 @@ var fs = require('fs');
 var csv = require('csv');
 var Q = require('q');
 
-module.exports = function () {
+module.exports = function (trainingSize, validationSize) {
 
     var dataSet = {
         train: {
@@ -25,7 +25,8 @@ module.exports = function () {
     csv()
         .from.path(__dirname+'/digits/train.csv', { delimiter: ',', escape: '"' })
         .on('record', function (row,index){
-            dSet = (index < 27000) ? 'train' : 'validation' ;
+            dSet = (index < trainingSize) ? 'train' : 'validation' ;
+            if (index >= (trainingSize+validationSize)) return; 
             
             var target = (row[0] == 0) ? 1 : 0 ;
             var features = _.map(row.slice(1), function (feature) {
