@@ -9,14 +9,15 @@ var knn, scoreStart, trainStart;
 
 Q.longStackSupport = true;
 
-var trainSize = parseInt(process.argv[2]) || 27000 ;
-var validationSize = parseInt(process.argv[3]) || 3000 ;
+var numNeighbors = parseInt(process.argv[2]) || 5 ;
+var trainSize = process.argv[3].split(',') || [27000,3000] ;
 var metricType = process.argv[4] || 'euclidian' ;
+var weightedKNN = process.argv[5] || false ;
 
 console.log('Loading Dataset...');
-getDataSet(trainSize, validationSize).then(function (dataSet, getTestData) {
+getDataSet(parseInt(trainSize[0]), parseInt(trainSize[1])).then(function (dataSet, getTestData) {
     console.log('Finished Loading Dataset in', (Date.now() - dataStart) / 1000, 'Seconds');
-    knn = mlearn.classifier('knn', { neighbors: 5, metric: metricType });
+    knn = mlearn.classifier('knn', { neighbors: parseInt(numNeighbors), metric: metricType, weights: (weightedKNN) ? true : false });
     console.log('Training Model...');
 
     trainStart = Date.now();
@@ -29,7 +30,7 @@ getDataSet(trainSize, validationSize).then(function (dataSet, getTestData) {
     console.log('Scoring Model...');
     return knn.scoring(dataSet.validation.features, dataSet.validation.targets);
 }).then(function (score) {
-    console.log('Finished Scoring W/ Accuracy of', (Math.round(score, 2) * 100) + '%');
+    console.log('Finished Scoring W/ Accuracy of', (score * 100) + '%');
     console.log('Completed Scoring in', (Date.now() - scoreStart) / 1000, 'Seconds');
     console.log('Completed All in', (Date.now() - startTime) / 1000, 'Seconds');
 }).catch(function (error) {
