@@ -5,7 +5,7 @@ var Q = require('q');
 
 module.exports = function (trainingSize, validationSize) {
 
-    var dataSet = {
+    var data = {
         train: {
             features: [],
             targets: []
@@ -32,13 +32,13 @@ module.exports = function (trainingSize, validationSize) {
             var features = _.map(row.slice(1), function (feature) {
                 return feature > 0 ? feature/255 : 0 ;
             });
-            dataSet[dSet].features.push(features);
-            dataSet[dSet].targets.push(target);
+            data[dSet].features.push(features);
+            data[dSet].targets.push(target);
         })
         .on('end', function (count) {
-            console.log('Traing Data Size: ' + dataSet.train.features.length + ' records and ' + dataSet.train.features[0].length + ' features');
-            console.log('Validation Data Size: ' + dataSet.validation.features.length + ' records and ' + dataSet.validation.features[0].length + ' features');
-            deferred.resolve(dataSet); 
+            console.log('Traing Data Size: ' + data.train.features.length + ' records and ' + data.train.features[0].length + ' features');
+            console.log('Validation Data Size: ' + data.validation.features.length + ' records and ' + data.validation.features[0].length + ' features');
+            deferred.resolve(data); 
         })
         .on('error', function (error) {
             deferred.reject(error);

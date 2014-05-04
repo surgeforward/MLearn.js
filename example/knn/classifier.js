@@ -9,10 +9,12 @@ var knn, scoreStart, trainStart;
 
 Q.longStackSupport = true;
 
-var metricType = process.argv[2] || 'euclidian' ;
+var trainSize = parseInt(process.argv[2]) || 27000 ;
+var validationSize = parseInt(process.argv[3]) || 3000 ;
+var metricType = process.argv[4] || 'euclidian' ;
 
 console.log('Loading Dataset...');
-getDataSet().then(function (dataSet, getTestData) {
+getDataSet(trainSize, validationSize).then(function (dataSet, getTestData) {
     console.log('Finished Loading Dataset in', (Date.now() - dataStart) / 1000, 'Seconds');
     knn = mlearn.classifier('knn', { neighbors: 5, metric: metricType });
     console.log('Training Model...');
