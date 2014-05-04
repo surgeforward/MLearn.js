@@ -25,14 +25,14 @@ module.exports = function () {
     csv()
         .from.path(__dirname+'/digits/train.csv', { delimiter: ',', escape: '"' })
         .on('record', function (row,index){
-            dSet = (index < 30000) ? 'train' : 'validation' ;
-            if (index >= 31000) return;
+            dSet = (index < 27000) ? 'train' : 'validation' ;
             
+            var target = (row[0] == 0) ? 1 : 0 ;
             var features = _.map(row.slice(1), function (feature) {
-                return feature > 0 ? 1 : 0 ;
+                return feature > 0 ? feature/255 : 0 ;
             });
             dataSet[dSet].features.push(features);
-            dataSet[dSet].targets.push(row[0]);
+            dataSet[dSet].targets.push(target);
         })
         .on('end', function (count) {
             console.log('Traing Data Size: ' + dataSet.train.features.length + ' records and ' + dataSet.train.features[0].length + ' features');
