@@ -22,7 +22,7 @@ getDataSet(parseInt(trainSize[0]), parseInt(trainSize[1]))
         console.log('Training Model...');
 
         trainStart = Date.now();
-        return knn.training(dataSet.train.features, dataSet.train.targets).then(function () {
+        return knn.training(dataSet.train).then(function () {
             
             console.log('Completed Training in', (Date.now() - trainStart) / 1000, 'Seconds');
             return dataSet;
@@ -33,7 +33,7 @@ getDataSet(parseInt(trainSize[0]), parseInt(trainSize[1]))
 
         scoreStart = Date.now();
         console.log('Scoring Model...');
-        return knn.scoring(dataSet.validation.features, dataSet.validation.targets);
+        return knn.scoring(dataSet.validation);
 
     }).then(function (score) {
        
@@ -44,7 +44,9 @@ getDataSet(parseInt(trainSize[0]), parseInt(trainSize[1]))
         console.log('Error: ', score.error());
 
         console.log('Misses:');
-        console.log(score.misses());
+        _.each(score.misses(), function (x) {
+            console('Predicted: ' + x.prediction + ', Target: ' + x.target);
+        });
 
     }).catch(function (error) {
 
