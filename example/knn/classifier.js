@@ -46,7 +46,7 @@ getDataSet(parseInt(trainSize[0]), parseInt(trainSize[1]))
 
         console.log('Misses:');
         _.each(score.misses(), function (x) {
-            console('Predicted: ' + x.prediction + ', Target: ' + x.target);
+            console.log('Predicted: ' + x.prediction + ', Target: ' + x.target);
         });
 
     }).catch(function (error) {
