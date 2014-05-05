@@ -6,17 +6,8 @@ var Q = require('q');
 module.exports = function (trainingSize, validationSize) {
 
     var data = {
-        train: {
-            features: [],
-            targets: []
-        },
-        validation: {
-            features: [],
-            targets: []
-        },
-        test: {
-            features: []
-        }
+        train: [],
+        validation: []
     };
 
     var deferred = Q.defer();
@@ -24,19 +15,18 @@ module.exports = function (trainingSize, validationSize) {
     csv()
         .from.path(__dirname+'/digits/train.csv', { delimiter: ',', escape: '"' })
         .on('record', function (row,index){
-            var features = _.map(row.slice(1), function (feature) {
-                return feature>0?1:0;
+            var features = _.map(row.slice(1), function (xi) {
+                return xi>0?1:0;
             });
-            data.train.features.push(features);
-            data.train.targets.push(row[0]);
+            data.train.push({y: row[0], x: features});
         })
-        .on('end', function (count) {
-            data.validation.features = data.train.features.splice(trainingSize, validationSize);
-            data.validation.targets = data.train.targets.splice(trainingSize, validationSize);
-            data.train.features = data.train.features.splice(0, trainingSize);
-            data.train.targets = data.train.targets.splice(0, trainingSize);
-            console.log('Training Data Size: ' + data.train.features.length + ' records and ' + data.train.features[0].length + ' features');
-            console.log('Validation Data Size: ' + data.validation.features.length + ' records and ' + data.validation.features[0].length + ' features');
+        .on('end', function (count) {            
+            data.train = _.shuffle(data.train);
+            data.validation = data.train.splice(trainingSize, validationSize);
+            data.train = data.train.splice(0, trainingSize);
+
+            console.log('Training Data Size: ' + data.train.length + ' records and ' + data.train[0].x.length + ' features');
+            console.log('Validation Data Size: ' + data.validation.length + ' records and ' + data.validation[0].x.length + ' features');
             deferred.resolve(data); 
         })
         .on('error', function (error) {
