@@ -1,5 +1,6 @@
 var util = require('util');
 var Q = require('q');
+var _ = require('lodash');
 
 var getDataSet = require(__dirname + '/../../datasets/digits.js');
 
