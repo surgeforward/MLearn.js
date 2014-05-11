@@ -1,29 +1,12 @@
 About
 =====
 
-The Surge MLearn.JS package provided by the Surge Consulting Group is a set of open sourced tools for building machine learning applications.
+The Surge MLearn.js package provided by the Surge Consulting Group is a set of open sourced tools for building machine learning applications.
 
-Installation
+Related Packages
 =====
 
-
-
-Usage
-=====
-
-    var getDataSet = require(__dirname + '/../../datasets/digits.js');
-    var mlearn = require(__dirname + '/../../index.js')();
-
-    getDataSet().then(function (dataSet, getTestData) {
-        var knn = mlearn.classifier('knn', { neighbors: 5 });
-        return knn.training(dataSet.train.features, dataSet.train.targets).then(function () {
-            return dataSet;
-        });
-    }).then(function (dataSet) {
-        return knn.predicting(dataSet.validation.features, dataSet.validation.targets);
-    }).then(function (prediction) {
-        console.log('Predicted:', prediction);
-    });
+ * [Disciple.js](https://github.com/surgeforward/Disciple.js) Socket.io based server/client package for distributed predictions / model validation and analysis.
 
 References
 =====
