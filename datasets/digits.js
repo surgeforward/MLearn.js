@@ -1,9 +1,10 @@
 var _ = require('lodash');
+var util = require('util');
 var fs = require('fs');
 var csv = require('csv');
 var Q = require('q');
 
-module.exports = function (trainingSize, validationSize) {
+module.exports = function (pathToCSV, trainingSize, validationSize) {
 
     var data = {
         train: [],
@@ -13,7 +14,7 @@ module.exports = function (trainingSize, validationSize) {
     var deferred = Q.defer();
  
     csv()
-        .from.path(__dirname+'/digits/train.csv', { delimiter: ',', escape: '"' })
+        .from.path(pathToCSV, { delimiter: ',', escape: '"' })
         .on('record', function (row,index){
             var features = _.map(row.slice(1), function (xi) {
                 return xi>0?1:0;
@@ -25,8 +26,8 @@ module.exports = function (trainingSize, validationSize) {
             data.validation = data.train.splice(trainingSize, validationSize);
             data.train = data.train.splice(0, trainingSize);
 
-            console.log('Training Data Size: ' + data.train.length + ' records and ' + data.train[0].x.length + ' features');
-            console.log('Validation Data Size: ' + data.validation.length + ' records and ' + data.validation[0].x.length + ' features');
+            util.log('Training Data Size: ' + data.train.length + ' records and ' + data.train[0].x.length + ' features');
+            util.log('Validation Data Size: ' + data.validation.length + ' records and ' + data.validation[0].x.length + ' features');
             deferred.resolve(data); 
         })
         .on('error', function (error) {
