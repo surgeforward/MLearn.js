@@ -1,40 +1,35 @@
 var _ = require('lodash');
+var util = require('util');
 var fs = require('fs');
 var csv = require('csv');
 var Q = require('q');
 
-module.exports = function () {
+module.exports = function (pathToCSV, trainingSize, validationSize) {
 
-    var dataSet = {
-        train: {
-            features: [],
-            targets: []
-        },
-        validation: {
-            features: [],
-            targets: []
-        },
-        test: {
-            features: []
-        }
+    var data = {
+        train: [],
+        validation: []
     };
 
     var dSet = 'train';
     var deferred = Q.defer();
  
     csv()
-        .from.path(__dirname+'/houses/train.csv', { delimiter: ',', escape: '"' })
+        .from.path(pathToCSV, { delimiter: ',', escape: '"' })
         .on('record', function (row,index){
-            dSet = (index <= 25) ? 'train' : 'validation' ;
-            
-            var features = row.slice(1, 13);
-            dataSet[dSet].features.push(features);
-            dataSet[dSet].targets.push(row[13]*100);
+            var features = _.map(row.slice(1), function (xi) {
+                return xi>0?1:0;
+            });
+            data.train.push({y: row[0], x: features});
         })
-        .on('end', function (count) {
-            console.log('Traing Data Size: ' + dataSet.train.features.length + ' records and ' + dataSet.train.features[0].length + ' features');
-            console.log('Validation Data Size: ' + dataSet.validation.features.length + ' records and ' + dataSet.validation.features[0].length + ' features');
-            deferred.resolve(dataSet); 
+        .on('end', function (count) {            
+            data.train = _.shuffle(data.train);
+            data.validation = data.train.splice(trainingSize, validationSize);
+            data.train = data.train.splice(0, trainingSize);
+
+            util.log('Training Data Size: ' + data.train.length + ' records and ' + data.train[0].x.length + ' features');
+            util.log('Validation Data Size: ' + data.validation.length + ' records and ' + data.validation[0].x.length + ' features');
+            deferred.resolve(data); 
         })
         .on('error', function (error) {
             deferred.reject(error);
