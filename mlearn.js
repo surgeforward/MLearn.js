@@ -13,6 +13,14 @@ module.exports = function () {
     /**
      *
      */
+    mlearn.dataset = function (config) {
+        var dataset = require(__dirname+'/lib/dataset.js');
+        return dataset( config );
+    };
+
+    /**
+     *
+     */
     mlearn.classifier = function (type, properties) {
         var classifier = require(__dirname+'/lib/classifier.js');
         return classifier( type, properties );

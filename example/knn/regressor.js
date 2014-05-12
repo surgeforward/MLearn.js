@@ -2,10 +2,9 @@ var util = require('util');
 var Q = require('q');
 var _ = require('lodash');
 
-var getDataSet = require(__dirname + '/../../datasets/houses.js');
-
 var startTime = Date.now(), dataStart = Date.now();
 var mlearn = require(__dirname + '/../../mlearn.js')();
+var dataset = mlearn.dataset();
 var knn, scoreStart, trainStart;
 
 Q.longStackSupport = true;
@@ -15,28 +14,37 @@ var trainSize = process.argv[3] || '27000,3000' ;
 trainSize = trainSize.split(',');
 var metricType = process.argv[4] || 'euclidian' ;
 
-var pathToCSV = 'path/to/mlearn/sample-hours/train.csv';
+var pathToCSV = '../mlearn-datasets/sample-houses/train.csv';
 
-util.log('Loading Dataset...');
-getDataSet(pathToCSV, parseInt(trainSize[0]), parseInt(trainSize[1]))
-    .then(function (dataSet, getTestData) {
+dataset.from.csv(pathToCSV)
+    .then(function () {
 
-        knn = mlearn.regressor('knn', { neighbors: parseInt(numNeighbors), metric: metricType});
-        util.log('Training Model...');
+        knn = mlearn.classifier('knn', {
+            neighbors: parseInt(numNeighbors),
+            metric: metricType,
+            weights: (weightedKNN) ? true : false
+        });
+
+        dataset.shuffle();
+        trainingData = dataset.split(.9);
+        validationData = dataset.split(.1);
+
+        util.log('Training Model W/ ' + trainingData.length + ' records and ' + trainingData[0].x.length + ' features');
 
         trainStart = Date.now();
-        return knn.training(dataSet.train).then(function () {
+        return knn.training(trainingData).then(function () {
             
             util.log('Completed Training in ' + ((Date.now() - trainStart) / 1000) + ' seconds');
-            return dataSet;
+            return dataset;
 
         });
 
-    }).then(function (dataSet) {
+    }).then(function (dataset) {
+
+        util.log('Scoring Model W/ ' + validationData.length + ' records and ' + validationData[0].x.length + ' features');
 
         scoreStart = Date.now();
-        util.log('Scoring Model...');
-        return knn.scoring(dataSet.validation);
+        return knn.scoring(validationData);
 
     }).then(function (score) {
        
