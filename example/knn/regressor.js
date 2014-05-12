@@ -15,8 +15,7 @@ var trainSize = process.argv[3] || '27000,3000' ;
 trainSize = trainSize.split(',');
 var metricType = process.argv[4] || 'euclidian' ;
 
-var pathToCSV = '/Volumes/Crucial 240GB/Workspace/Surge/GitHub/mlearn-datasets/sample-houses/train.csv';
-//var pathToCSV = 'path/to/mlearn/sample-hours/train.csv';
+var pathToCSV = 'path/to/mlearn/sample-hours/train.csv';
 
 util.log('Loading Dataset...');
 getDataSet(pathToCSV, parseInt(trainSize[0]), parseInt(trainSize[1]))
