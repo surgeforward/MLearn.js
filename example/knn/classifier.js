@@ -26,7 +26,7 @@ dataset.from.csv(pathToCSV)
             weights: (weightedKNN) ? true : false
         });
 
-        dataset.shuffle();
+        dataset.normalize().shuffle();
         trainingData = dataset.split(.9);
         validationData = dataset.split(.1);
 
@@ -34,10 +34,8 @@ dataset.from.csv(pathToCSV)
 
         trainStart = Date.now();
         return knn.training(trainingData).then(function () {
-            
             util.log('Completed Training in ' + ((Date.now() - trainStart) / 1000) + ' seconds');
             return dataset;
-
         });
 
     }).then(function (dataset) {
