@@ -19,24 +19,21 @@ var pathToCSV = '../mlearn-datasets/sample-houses/train.csv';
 dataset.from.csv(pathToCSV)
     .then(function () {
 
-        knn = mlearn.classifier('knn', {
+        knn = mlearn.regressor('knn', {
             neighbors: parseInt(numNeighbors),
-            metric: metricType,
-            weights: (weightedKNN) ? true : false
+            metric: metricType
         });
 
         dataset.shuffle();
-        trainingData = dataset.split(.9);
-        validationData = dataset.split(.1);
+        trainingData = dataset.split(.7);
+        validationData = dataset.split(.3);
 
         util.log('Training Model W/ ' + trainingData.length + ' records and ' + trainingData[0].x.length + ' features');
 
         trainStart = Date.now();
         return knn.training(trainingData).then(function () {
-            
             util.log('Completed Training in ' + ((Date.now() - trainStart) / 1000) + ' seconds');
             return dataset;
-
         });
 
     }).then(function (dataset) {
@@ -50,7 +47,6 @@ dataset.from.csv(pathToCSV)
        
         util.log('Completed Scoring in ' + ((Date.now() - scoreStart) / 1000) + ' seconds');
         util.log('Completed All in ' + ((Date.now() - startTime) / 1000) + ' seconds');
-
         util.log('Error: ' + score.error());
 
     }).catch(function (error) {
