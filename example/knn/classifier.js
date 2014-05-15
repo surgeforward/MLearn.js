@@ -3,7 +3,7 @@ var Q = require('q');
 var _ = require('lodash');
 
 var startTime = Date.now(), dataStart = Date.now();
-var mlearn = require(__dirname + '/../../mlearn.js')();
+var mlearn = require(__dirname + '/../../index.js')();
 var dataset = mlearn.dataset();
 var knn, scoreStart, trainStart;
 
@@ -13,7 +13,7 @@ var numNeighbors = parseInt(process.argv[2]) || 5 ;
 var metricType = process.argv[3] || 'euclidian' ;
 var weightedKNN = process.argv[4] || false ;
 
-var pathToCSV = '../mlearn-datasets/kaggle-hwdigits/train.csv';
+var pathToCSV = 'https://github.com/surgeforward/mlearn-datasets/raw/master/kaggle-hwdigits/train.csv';
 
 var validationData, trainingData;
 
