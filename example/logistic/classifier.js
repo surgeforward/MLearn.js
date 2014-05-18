@@ -1,34 +1,61 @@
 var util = require('util');
 var Q = require('q');
+var _ = require('lodash');
 
 var startTime = Date.now(), dataStart = Date.now();
-var mlearn = require(__dirname + '/../../mlearn.js')();
+var mlearn = require(__dirname + '/../../index.js')();
+
+var dataset = mlearn.dataset();
 var logistic, scoreStart, trainStart;
 
 Q.longStackSupport = true;
 
-console.log('Loading Dataset...');
-mlearn.data.from.csv(__dirname+'/datasets/digits/train.csv')
-.then(function (dataSet, getTestData) {
-    console.log('Finished Loading Dataset in', (Date.now() - dataStart) / 1000, 'Seconds');
-    logistic = mlearn.classifier('logistic', {iterations: 100, alpha: 0.001, lambda: 0.001});
-    console.log('Training Model...');
+var pathToCSV = 'https://github.com/surgeforward/mlearn-datasets/raw/master/kaggle-hwdigits/train.csv';
 
-    trainStart = Date.now();
-    return logistic.training(dataSet.train.features, dataSet.train.targets).then(function () {
-        console.log('Completed Training in', (Date.now() - trainStart) / 1000, 'Seconds');
-        return dataSet;
+var validationData, trainingData;
+
+dataset.from.csv(pathToCSV)
+    .then(function () {
+
+        logistic = mlearn.classifier('logistic', {});
+
+        dataset.normalize().shuffle();
+        trainingData = dataset.split(.9);
+        validationData = dataset.split(.1);
+
+        util.log('Training Model W/ ' + trainingData.length + ' records and ' + trainingData[0].x.length + ' features');
+
+        trainStart = Date.now();
+        return logistic.training(trainingData).then(function () {
+            util.log('Completed Training in ' + ((Date.now() - trainStart) / 1000) + ' seconds');
+            return dataset;
+        });
+
+    }).then(function (dataset) {
+
+        util.log('Scoring Model W/ ' + validationData.length + ' records and ' + validationData[0].x.length + ' features');
+
+        scoreStart = Date.now();
+        return logistic.scoring(validationData);
+
+    }).then(function (score) {
+       
+        util.log('Completed Scoring in ' + ((Date.now() - scoreStart) / 1000) + ' seconds');
+        util.log('Completed All in ' + ((Date.now() - startTime) / 1000) + ' seconds');
+
+        util.log('Accuracy: ' + score.accuracy());
+        util.log('Error: ' + score.error());
+
+        var misses = score.misses();
+        util.log('Misses: ' + misses.length);
+        _.each(score.misses(), function (x) {
+            util.log('Predicted: ' + x.prediction + ' Target: ' + x.target);
+        });
+
+    }).catch(function (error) {
+
+        // catch any errors thrown by any of the above promises
+        util.error('Error at classifier.js promise chain:');
+        util.error(error.stack);
+
     });
-}).then(function (dataSet) {
-    scoreStart = Date.now();
-    console.log('Scoring Model...');
-    return logistic.scoring(dataSet.validation.features, dataSet.validation.targets);
-}).then(function (score) {
-    console.log('Finished Scoring W/ Accuracy of', (score * 100) + '%');
-    console.log('Completed Scoring in', (Date.now() - scoreStart) / 1000, 'Seconds');
-    console.log('Completed All in', (Date.now() - startTime) / 1000, 'Seconds');
-}).catch(function (error) {
-    // catch any errors thrown by any of the above promises
-    util.error('Error at classifier.js promise chain:');
-    util.error(error.stack);
-});
